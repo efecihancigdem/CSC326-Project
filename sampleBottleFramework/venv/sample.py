@@ -1,4 +1,4 @@
-from bottle import route, run, static_file
+from bottle import route, run, static_file, request
 
 @route('/hello')
 def hello():
@@ -11,4 +11,8 @@ def fromFile(fileName):
     fileName=fileName+'.htm'
     return static_file(fileName, root= 'websites')
 
-run(host='localhost', port=8080, debug=True)
+#this is the result of login page
+@route('/login')
+def login():
+    return static_file('login.htm', root= 'websites')
+run(port=8090)
