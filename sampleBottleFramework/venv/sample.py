@@ -11,6 +11,11 @@ def fromFile(fileName):
     fileName=fileName+'.htm'
     return static_file(fileName, root= 'websites')
 
+@route('/image/<picture>')
+def serve_pictures(picture):
+    picture=picture+'.png'
+    return static_file(picture, root='websites')
+
 #this is the result of login page
 @route('/login')
 def login():
