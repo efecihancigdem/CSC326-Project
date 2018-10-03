@@ -18,9 +18,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import urllib.request, urllib.error, urllib.parse
-import urllib.parse
-from bs4 import BeautifulSoup
+import urllib2
+import urlparse
+from BeautifulSoup import *
 from collections import defaultdict
 import re
 
@@ -174,9 +174,9 @@ class crawler(object):
             curr_url, rel = rel, ""
 
         # compute the new url based on import
-        curr_url = urllib.parse.urldefrag(curr_url)[0]
-        parsed_url = urllib.parse.urlparse(curr_url)
-        return urllib.parse.urljoin(parsed_url.geturl(), rel)
+        curr_url = urlparse.urldefrag(curr_url)[0]
+        parsed_url = urlparse.urlparse(curr_url)
+        return urlparse.urljoin(parsed_url.geturl(), rel)
 
     def add_link(self, from_doc_id, to_doc_id):
         """Add a link into the database, or increase the number of links between
@@ -186,7 +186,7 @@ class crawler(object):
     def _visit_title(self, elem):
         """Called when visiting the <title> tag."""
         title_text = self._text_of(elem).strip()
-        print("document title=" + repr(title_text))
+        print "document title=" + repr(title_text)
 
         # TODO update document title for document id self._curr_doc_id
 
@@ -213,7 +213,7 @@ class crawler(object):
         # TODO: knowing self._curr_doc_id and the list of all words and their
         #       font sizes (in self._curr_words), add all the words into the
         #       database for this document
-        print("    num words=" + str(len(self._curr_words)))
+        print "    num words=" + str(len(self._curr_words))
 
     def _increase_font_factor(self, factor):
         """Increade/decrease the current font size."""
@@ -264,8 +264,8 @@ class crawler(object):
         tag = soup.html
         stack = [DummyTag(), soup.html]
 
-        while tag and tag.__next__:
-            tag = tag.__next__
+        while tag and tag.next:
+            tag = tag.next
 
             # html tag
             if isinstance(tag, Tag):
@@ -317,8 +317,8 @@ class crawler(object):
 
             socket = None
             try:
-                socket = urllib.request.urlopen(url, timeout=timeout)
-                soup = BeautifulSoup(socket.read(),features="html.parser")
+                socket = urllib2.urlopen(url, timeout=timeout)
+                soup = BeautifulSoup(socket.read())
 
                 self._curr_depth = depth_ + 1
                 self._curr_url = url
@@ -327,10 +327,10 @@ class crawler(object):
                 self._curr_words = []
                 self._index_document(soup)
                 self._add_words_to_document()
-                print("    url=" + repr(self._curr_url))
+                print "    url=" + repr(self._curr_url)
 
             except Exception as e:
-                print(e)
+                print e
                 pass
             finally:
                 if socket:
@@ -339,5 +339,4 @@ class crawler(object):
 
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
-    bot.crawl(depth=3)
-    print(bot._word_id_cache)
+    bot.crawl(depth=1)
