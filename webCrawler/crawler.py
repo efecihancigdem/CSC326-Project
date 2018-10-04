@@ -55,6 +55,11 @@ class crawler(object):
         self._url_queue = []
         self._doc_id_cache = {}
         self._word_id_cache = {}
+        # this is a list that contains all the documents' urls as elements,
+        # the documents' ids are their index in this list
+        # the first id (id 0) is invalid
+        self._document_index=["Invalid index: indices start at 1"]
+
 
         # functions to call when entering and exiting specific tags
         self._enter = defaultdict(lambda *a, **ka: self._visit_ignore)
@@ -171,6 +176,7 @@ class crawler(object):
 
         doc_id = self._mock_insert_document(url)
         self._doc_id_cache[url] = doc_id
+        self._document_index.append(url)
         return doc_id
 
     def _fix_url(self, curr_url, rel):
@@ -336,6 +342,8 @@ class crawler(object):
                 self._index_document(soup)
                 self._add_words_to_document()
 
+                # print "length of _cache_word_id is " + str(len(self._word_id_cache))
+                # print "next word id is " + str(self._mock_next_word_id)
                 print "    url=" + repr(self._curr_url)
 
             except Exception as e:
