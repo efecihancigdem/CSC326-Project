@@ -157,7 +157,7 @@ class crawler(object):
         """Get the word id of some specific word.
             note: input argument word is a string"""
         if word in self._word_id_cache:
-            self._inverted_index[word].add(self._curr_doc_id)
+            self._inverted_index[self._word_id_cache[word]].add(self._curr_doc_id)
             return self._word_id_cache[word]
 
         # TODO: 1) add the word to the lexicon, if that fails, then the
@@ -170,7 +170,7 @@ class crawler(object):
         word_id = self._mock_insert_word(word)
         self._word_id_cache[word] = word_id
         # adds the current document id into inverted index
-        self._inverted_index[word]=set([self._curr_doc_id])
+        self._inverted_index[self._word_id_cache[word]]=set([self._curr_doc_id])
         return word_id
 
     def document_id(self, url):
