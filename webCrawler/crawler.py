@@ -157,6 +157,7 @@ class crawler(object):
         """Get the word id of some specific word.
             note: input argument word is a string"""
         if word in self._word_id_cache:
+            self._resolved_inverted_index[word].add(self._curr_url)
             self._inverted_index[self._word_id_cache[word]].add(self._curr_doc_id)
             return self._word_id_cache[word]
 
@@ -170,6 +171,7 @@ class crawler(object):
         word_id = self._mock_insert_word(word)
         self._word_id_cache[word] = word_id
         # adds the current document id into inverted index
+        self._resolved_inverted_index[word]=set([self._curr_url])
         self._inverted_index[self._word_id_cache[word]]=set([self._curr_doc_id])
         return word_id
 
@@ -320,6 +322,9 @@ class crawler(object):
     def get_inverted_index(self):
         # returns the inverted index built during crawling
         return self._inverted_index
+    def get_resolved_inverted_index(self):
+        # returns the resolved inverted index
+        return self._resolved_inverted_index
 
     def crawl(self, depth=2, timeout=3):
         """Crawl the web!"""
@@ -370,3 +375,4 @@ if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
     bot.crawl(depth=1)
     print bot.get_inverted_index()
+    print bot.get_resolved_inverted_index()
