@@ -18,6 +18,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+'''Useful notes to self: The crawler object has some useful member entities:
+1. _curr_words: a list of pairs that stores word id as its first element and font size as its second element
+2. _doc_id_cache: a dictionary that stores url name on the current page as its key and doc_id as its value
+3. _word_id_cache: a dictionary that stores word string as key and word id as its value'''
+
 import urllib2
 import urlparse
 from BeautifulSoup import *
@@ -139,7 +144,8 @@ class crawler(object):
         return ret_id
 
     def word_id(self, word):
-        """Get the word id of some specific word."""
+        """Get the word id of some specific word.
+            note: input argument word is a string"""
         if word in self._word_id_cache:
             return self._word_id_cache[word]
 
@@ -148,6 +154,8 @@ class crawler(object):
         #       2) query the lexicon for the id assigned to this word,
         #          store it in the word id cache, and return the id.
 
+        # this only execute when the argument doesn't exist in _word_id_cache
+        # it will add the argument as a new entry to _word_id_cache
         word_id = self._mock_insert_word(word)
         self._word_id_cache[word] = word_id
         return word_id
@@ -327,6 +335,7 @@ class crawler(object):
                 self._curr_words = []
                 self._index_document(soup)
                 self._add_words_to_document()
+
                 print "    url=" + repr(self._curr_url)
 
             except Exception as e:
