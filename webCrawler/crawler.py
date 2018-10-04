@@ -59,6 +59,11 @@ class crawler(object):
         # the documents' ids are their index in this list
         # the first id (id 0) is invalid
         self._document_index=["Invalid index: indices start at 1"]
+        # this is a dictionary that has word id as the key, and the list of document ids that contains this word
+        # as the value
+        self._inverted_index={}
+        # same thing as _inverted_index, but it has the actual word string as its key and actual url as its value
+        self._resolved_inverted_index={}
 
 
         # functions to call when entering and exiting specific tags
@@ -152,6 +157,7 @@ class crawler(object):
         """Get the word id of some specific word.
             note: input argument word is a string"""
         if word in self._word_id_cache:
+            self._inverted_index[word].add(self._curr_doc_id)
             return self._word_id_cache[word]
 
         # TODO: 1) add the word to the lexicon, if that fails, then the
@@ -163,6 +169,8 @@ class crawler(object):
         # it will add the argument as a new entry to _word_id_cache
         word_id = self._mock_insert_word(word)
         self._word_id_cache[word] = word_id
+        # adds the current document id into inverted index
+        self._inverted_index[word]=set([self._curr_doc_id])
         return word_id
 
     def document_id(self, url):
@@ -309,6 +317,10 @@ class crawler(object):
             else:
                 self._add_text(tag)
 
+    def get_inverted_index(self):
+        # returns the inverted index built during crawling
+        return self._inverted_index
+
     def crawl(self, depth=2, timeout=3):
         """Crawl the web!"""
         seen = set()
@@ -357,3 +369,4 @@ class crawler(object):
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
     bot.crawl(depth=1)
+    print bot.get_inverted_index()
