@@ -36,8 +36,10 @@ def parse():
     for word in words_in_quesry:
         my_url += word + "+"
     parsed_dict = word_count(query)
+    words = search_word_parse(parsed_dict)
+    count = search_count_parse(parsed_dict)
     #redirect("/search/<my_url>")
-    return parsed_dict
+    return template('search', name = words,freq = count,query = query)
 
 #For users with the link
 @route('/search/query=<query>')
@@ -70,7 +72,22 @@ def history_count_parse():
         freq.append(count)
         i += 1
     return freq
-run(port=8090)
+def search_word_parse(results):
+    words = []
+    i=0
+    for word, count in results.items():
+        words.append(word)
+        i+=1
+    return words
+
+def search_count_parse(results):
+    freq = []
+    i = 0
+    for word in results:
+        freq.append(results[word])
+        i += 1
+    return freq
+run(port=8080)
 
 #Template for table results page#
 #Request used for getting quesries in the Url and can be used

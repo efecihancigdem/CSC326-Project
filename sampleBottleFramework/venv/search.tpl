@@ -33,14 +33,16 @@ table th {
 
 <!-- Dont forget to change w3schools -->
 <map name="Logo">
-  <area shape="rect" coords="0,0,300,150" alt="Kajima" href="http://127.0.0.1:8090/">
+  <area shape="rect" coords="0,0,300,150" alt="Kajima" href="http://127.0.0.1:8080/">
 </map>
 
 </body>
 
 <h1> Your Research Results by Kajima </h2>
 
-<h2> Search Results </h2>
+<p> You searched: <i>"{{query}}"</i> </p>
+
+<h1> Search Results </h1>
 <table id="results">
   <tr>
     <th>Word</th>
@@ -54,6 +56,7 @@ table th {
 %end
 </table>
 
+<p>Please click Kajima logo or <a href="http://127.0.0.1:8080/">here</a> to go back to home page </p>
 
 
 </html>
