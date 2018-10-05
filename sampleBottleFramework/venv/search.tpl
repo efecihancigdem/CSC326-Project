@@ -38,11 +38,11 @@ table th {
 
 </body>
 
-<h1> Your Research Results by Kajima </h2>
+<h1 style="font-size:125%;"> Your Research Results by Kajima </h1>
 
 <p> You searched: <i>"{{query}}"</i> </p>
 
-<h1> Search Results </h1>
+<h1 style="font-size:125%;"> Search Results </h1>
 <table id="results">
   <tr>
     <th>Word</th>

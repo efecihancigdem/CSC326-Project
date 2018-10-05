@@ -28,7 +28,7 @@ def serve_pictures(picture):
 def login():
     return static_file('login.htm', root= 'websites')
 
-@route('/search', method='POST')
+@route('/', method='POST')
 def parse():
     query = request.forms.get('search')
     words_in_quesry=query.split(" ")
