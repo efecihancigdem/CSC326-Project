@@ -13,13 +13,13 @@ th, td {
     padding: 15px;
     text-align: left;
 }
-table#t01 tr:nth-child(even) {
+table#history tr:nth-child(even) {
     background-color: #eee;
 }
-table#t01 tr:nth-child(odd) {
+table#history tr:nth-child(odd) {
    background-color: #fff;
 }
-table#t01 th {
+table#history th {
     background-color: black;
     color: white;
 }
@@ -38,28 +38,24 @@ table#t01 th {
 
 </body>
 
-<form action="/login" method="post"> 
-Username: <input name="username" type="text" /> 
-Password: <input name="username" type="password" /> 
-<input value="Login" type="submit" />
- </form>
+<h2> Welcome to Kajima </h2>
 
 <form action="/search" method="post">
 <p>Input your search here: <p> <input name="search" type="text" >
 <input type="submit" value="submit">
 </form>
 
-<br>
-<br>
 
-<table id="t01">
+<h2> Search History </h2>
+
+<table id="history">
   <tr>
     <th>Word</th>
     <th>Count</th>
   </tr>
   <tr>
-    <td>Jill</td>
-    <td>Smith</td>
+    <td>aasd</td>
+    <td>asd</td>
   </tr>
   <tr>
     <td>Eve</td>
