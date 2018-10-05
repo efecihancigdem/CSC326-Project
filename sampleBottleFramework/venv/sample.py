@@ -2,7 +2,8 @@ from bottle import route, run, static_file, request, template
 from collections import Counter
 
 search_history = Counter()
-
+listed= ['brandon','efe']
+freq = [2,1]
 
 @route('/hello')
 def hello():
@@ -13,8 +14,9 @@ def hello():
 def fromFile():
     #to eliminate the need for users to type in the file type
     fileName='home'
-
-    return template(fileName)
+    words = history_word_parse()
+    count =history_count_parse()
+    return template(fileName,name=words,freq=count)
 
 @route('/image/<picture>')
 def serve_pictures(picture):
@@ -52,6 +54,22 @@ def word_count(str):
         else:
             counts[word] = 1
     return counts
+
+def history_word_parse():
+    words = []
+    i=0
+    for word, count in search_history.most_common(20):
+        words.append(word)
+        i+=1
+    return words
+
+def history_count_parse():
+    freq = []
+    i = 0
+    for word, count in search_history.most_common(20):
+        freq.append(count)
+        i += 1
+    return freq
 run(port=8090)
 
 #Template for table results page#

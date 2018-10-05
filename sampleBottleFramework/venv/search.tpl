@@ -13,13 +13,13 @@ th, td {
     padding: 15px;
     text-align: left;
 }
-table#history tr:nth-child(even) {
+table tr:nth-child(even) {
     background-color: #eee;
 }
-table#history tr:nth-child(odd) {
+table tr:nth-child(odd) {
    background-color: #fff;
 }
-table#history th {
+table th {
     background-color: black;
     color: white;
 }
@@ -38,16 +38,10 @@ table#history th {
 
 </body>
 
-<h2> Welcome to Kajima </h2>
+<h1> Your Research Results by Kajima </h2>
 
-<form action="/search" method="post">
-<p>Input your search here: <p> <input name="search" type="text" >
-<input type="submit" value="submit">
-</form>
-
-
-<h2> Search History </h2>
-<table id="history">
+<h2> Search Results </h2>
+<table id="results">
   <tr>
     <th>Word</th>
     <th>Count</th>
