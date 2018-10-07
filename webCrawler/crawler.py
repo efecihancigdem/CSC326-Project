@@ -21,7 +21,8 @@
 '''Useful notes to self: The crawler object has some useful member entities:
 1. _curr_words: a list of pairs that stores word id as its first element and font size as its second element
 2. _doc_id_cache: a dictionary that stores url name on the current page as its key and doc_id as its value
-3. _word_id_cache: a dictionary that stores word string as key and word id as its value'''
+3. _word_id_cache: a dictionary that stores word string as key and word id as its value
+4. _document_index: a list of all the documents crawled, the index of each entry is the actual document index'''
 
 import urllib2
 import urlparse
@@ -319,6 +320,14 @@ class crawler(object):
             else:
                 self._add_text(tag)
 
+    def print_inverted_index(self):
+        for word_id in self._inverted_index:
+            print str(word_id) + " : " + str(self._inverted_index[word_id])
+
+    def print_resolved_inverted_index(self):
+        for word in self._resolved_inverted_index:
+            print word + " : " + str(self._resolved_inverted_index[word])
+
     def get_inverted_index(self):
         # returns the inverted index built during crawling
         return self._inverted_index
@@ -374,5 +383,6 @@ class crawler(object):
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
     bot.crawl(depth=1)
-    print bot.get_inverted_index()
-    print bot.get_resolved_inverted_index()
+    print bot.print_inverted_index()
+    print bot.print_resolved_inverted_index()
+    print "Total number of websites crawed: " + str(len(bot._doc_id_cache))
