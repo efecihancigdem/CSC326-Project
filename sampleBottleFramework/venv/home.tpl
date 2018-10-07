@@ -40,7 +40,7 @@ table#history th {
 
 <h2> Welcome to Kajima </h2>
 
-<form action="/" method="post">
+<form action="/" method="get">
 <p>Input your search here: <p> <input name="search" type="text" >
 <input type="submit" value="submit">
 </form>

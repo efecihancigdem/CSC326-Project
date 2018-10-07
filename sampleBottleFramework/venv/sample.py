@@ -11,13 +11,30 @@ def hello():
 
 #this is a website that displays an htm file
 @route('/')
-def fromFile():
-    #to eliminate the need for users to type in the file type
-    fileName='home'
-    words = history_word_parse()
-    count =history_count_parse()
-    return template(fileName,name=words,freq=count)
+# def fromFile():
+#     #to eliminate the need for users to type in the file type
+#     fileName='home'
+#     words = history_word_parse()
+#     count = history_count_parse()
+#     return template(fileName,name=words,freq=count)
 
+def display_search():
+    query = request.query.search
+    if query=="":
+        fileName = 'home'
+        words = history_word_parse()
+        count = history_count_parse()
+        return template(fileName,name=words,freq=count)
+    words_in_quesry = query.split(" ")
+    my_url = "query="
+    for word in words_in_quesry:
+        my_url += word + "+"
+    parsed_dict = word_count(query)
+    words = search_word_parse(parsed_dict)
+    count = search_count_parse(parsed_dict)
+    # redirect("/search/<my_url>")
+
+    return template('search', name=words, freq=count, query=query)
 @route('/image/<picture>')
 def serve_pictures(picture):
     picture = picture+'.png'
@@ -28,18 +45,20 @@ def serve_pictures(picture):
 def login():
     return static_file('login.htm', root= 'websites')
 
-@route('/', method='POST')
-def parse():
-    query = request.forms.get('search')
-    words_in_quesry=query.split(" ")
-    my_url = "query="
-    for word in words_in_quesry:
-        my_url += word + "+"
-    parsed_dict = word_count(query)
-    words = search_word_parse(parsed_dict)
-    count = search_count_parse(parsed_dict)
-    #redirect("/search/<my_url>")
-    return template('search', name = words,freq = count,query = query)
+# @route('/', method='POST')
+# def parse():
+#     query = request.form.get('search')
+#     words_in_quesry=query.split(" ")
+#     my_url = "query="
+#     for word in words_in_quesry:
+#         my_url += word + "+"
+#     parsed_dict = word_count(query)
+#     words = search_word_parse(parsed_dict)
+#     count = search_count_parse(parsed_dict)
+#     #redirect("/search/<my_url>")
+#     return template('search', name = words,freq = count,query = query)
+
+
 
 #For users with the link
 @route('/search/query=<query>')
@@ -87,7 +106,7 @@ def search_count_parse(results):
         freq.append(results[word])
         i += 1
     return freq
-run(port=8080)
+run(port=8090)
 
 #Template for table results page#
 #Request used for getting quesries in the Url and can be used
