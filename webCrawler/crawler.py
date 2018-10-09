@@ -330,9 +330,11 @@ class crawler(object):
 
     def get_inverted_index(self):
         # returns the inverted index built during crawling
+        self.print_inverted_index()
         return self._inverted_index
     def get_resolved_inverted_index(self):
         # returns the resolved inverted index
+        self.print_resolved_inverted_index()
         return self._resolved_inverted_index
 
     def crawl(self, depth=2, timeout=3):
@@ -383,6 +385,6 @@ class crawler(object):
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
     bot.crawl(depth=1)
-    print bot.print_inverted_index()
-    print bot.print_resolved_inverted_index()
+    bot.get_inverted_index()
+    bot.get_resolved_inverted_index()
     print "Total number of websites crawed: " + str(len(bot._doc_id_cache))
