@@ -31,7 +31,7 @@ table th {
 
 <img src="/image/kajima" alt="Kajima" usemap="#Logo" style="width:300px;height:150px;">
 
-<!-- Dont forget to change w3schools -->
+
 <map name="Logo">
   <area shape="rect" coords="0,0,300,150" alt="Kajima" href="http://127.0.0.1:8080/">
 </map>
