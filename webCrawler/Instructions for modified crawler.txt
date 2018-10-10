@@ -1,0 +1,15 @@
+Our modified crawler will craw all the urls in the document urls.txt which is included in this submission.
+The crawller crawls with default depth of 1. (This can be changed in line 387 of crawler.py)
+You should always create a crawler object and use the crawl member function before checking the deliverables. (It 
+is already done at line 386 and 387 of crawler.py)
+
+Deliverables:
+crawler.get_inverted_index: 
+	prints out the inverted index in the form specified by the lab document, it also returns
+	the inverted index as a dict(). It is at line 388 of crawler.py
+	Note: if you want to print out the index, pass in a argument do_print=True, it is defaulted to False
+
+crawler.get_resolved_inverted_index: 
+	prints out the resolved inverted index, it also returns the inverted index as 
+	a dict(). It is at line 389 of crawler.py
+	Note: if you want to print out the index, pass in a argument do_print=True, it is defaulted to False

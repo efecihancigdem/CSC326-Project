@@ -22,7 +22,8 @@
 1. _curr_words: a list of pairs that stores word id as its first element and font size as its second element
 2. _doc_id_cache: a dictionary that stores url name on the current page as its key and doc_id as its value
 3. _word_id_cache: a dictionary that stores word string as key and word id as its value
-4. _document_index: a list of all the documents crawled, the index of each entry is the actual document index'''
+4. _document_index: a list of all the documents crawled, the index of each entry is the actual document id
+5. _lexicon: a list of all the words crawled, the index of each entry is the actual word id'''
 
 import urllib2
 import urlparse
@@ -60,6 +61,9 @@ class crawler(object):
         # the documents' ids are their index in this list
         # the first id (id 0) is invalid
         self._document_index=["Invalid index: indices start at 1"]
+        # similar to _document_index, _lexicon stores all the words that had been crawled in the indexes
+        # that is their word_id
+        self._lexicon=["Invalid index: indices start at 1"]
         # this is a dictionary that has word id as the key, and the list of document ids that contains this word
         # as the value
         self._inverted_index={}
@@ -171,6 +175,7 @@ class crawler(object):
         # it will add the argument as a new entry to _word_id_cache
         word_id = self._mock_insert_word(word)
         self._word_id_cache[word] = word_id
+        self._lexicon.append(word)
         # adds the current document id into inverted index
         self._resolved_inverted_index[word]=set([self._curr_url])
         self._inverted_index[self._word_id_cache[word]]=set([self._curr_doc_id])
@@ -328,13 +333,16 @@ class crawler(object):
         for word in self._resolved_inverted_index:
             print word + " : " + str(self._resolved_inverted_index[word])
 
-    def get_inverted_index(self):
+    def get_inverted_index(self, do_print=False):
         # returns the inverted index built during crawling
-        self.print_inverted_index()
+        if do_print:
+            self.print_inverted_index()
         return self._inverted_index
-    def get_resolved_inverted_index(self):
+
+    def get_resolved_inverted_index(self, do_print=False):
         # returns the resolved inverted index
-        self.print_resolved_inverted_index()
+        if do_print:
+            self.print_resolved_inverted_index()
         return self._resolved_inverted_index
 
     def crawl(self, depth=2, timeout=3):
@@ -384,7 +392,6 @@ class crawler(object):
 
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
-    bot.crawl(depth=1)
-    bot.get_inverted_index()
-    bot.get_resolved_inverted_index()
-    print "Total number of websites crawed: " + str(len(bot._doc_id_cache))
+    bot.crawl(depth=0)
+    bot.get_inverted_index(do_print=True)
+    bot.get_resolved_inverted_index(do_print=True)
