@@ -7,7 +7,7 @@ search_history = Counter()
 #The fucntion that handles main page and result page
 @route('/')
 def display_search():
-    query = request.query.search #getting url query
+    query = request.query.keywords #getting url query
     if query == "": #Checking if it is home page request or search request
         fileName = 'home'
         words = history_word_parse()

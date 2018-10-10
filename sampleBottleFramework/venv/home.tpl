@@ -41,7 +41,7 @@ table#history th {
 <h2> Welcome to Kajima </h2>
 
 <form action="/" method="get">
-<p>Input your search here: <p> <input name="search" type="text" placeholder="Search Here">
+<p>Input your search here: <p> <input name="keywords" type="text" placeholder="Search Here">
 <input type="submit" value="submit">
 </form>
 
