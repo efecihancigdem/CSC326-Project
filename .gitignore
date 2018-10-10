@@ -5,3 +5,6 @@
 *.h
 *.xml
 *.pyc
+webCrawler/crawler.py
+webCrawler/Instructions for modified crawler.txt
+webCrawler/urls.txt
