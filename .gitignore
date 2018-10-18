@@ -3,3 +3,17 @@
 *.iml
 *.egg
 *.pyc
+*.pth
+*.tcl
+*.cfg
+*.pyd
+*.bat
+AWS/venv/Scripts/activate
+*.ps1
+*.dll
+*.exe
+AWS/venv/Scripts/pip3.6-script.py
+AWS/venv/Scripts/pip3-script.py
+AWS/venv/Scripts/pip-script.py
+AWS/venv/Scripts/easy_install-script.py
+AWS/venv/Scripts/easy_install-3.6-script.py
