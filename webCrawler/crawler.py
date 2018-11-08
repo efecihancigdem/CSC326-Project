@@ -23,13 +23,17 @@
 2. _doc_id_cache: a dictionary that stores url name on the current page as its key and doc_id as its value
 3. _word_id_cache: a dictionary that stores word string as key and word id as its value
 4. _document_index: a list of all the documents crawled, the index of each entry is the actual document id
-5. _lexicon: a list of all the words crawled, the index of each entry is the actual word id'''
+5. _lexicon: a list of all the words crawled, the index of each entry is the actual word id
+6. _lexicon_dic: a dictionary that has each lexicon as key and their word_id as value for quick searching
+7. _url_link: a list of pairs, the first element in the pair is from_doc_id, the second is to_url_id'''
+
 
 import urllib2
 import urlparse
 from BeautifulSoup import *
 from collections import defaultdict
 import re
+import pageRank
 
 
 def attr(elem, attr):
@@ -64,11 +68,15 @@ class crawler(object):
         # similar to _document_index, _lexicon stores all the words that had been crawled in the indexes
         # that is their word_id
         self._lexicon=["Invalid index: indices start at 1"]
+        #a dictionary that has each lexicon as key and their word_id as value for quick searching
+        self._lexicon_dic={}
         # this is a dictionary that has word id as the key, and the list of document ids that contains this word
         # as the value
         self._inverted_index={}
         # same thing as _inverted_index, but it has the actual word string as its key and actual url as its value
         self._resolved_inverted_index={}
+        # a list of pairs of from_url and to_utl used by pagerank system
+        self._url_link=[]
 
 
         # functions to call when entering and exiting specific tags
@@ -345,6 +353,14 @@ class crawler(object):
             self.print_resolved_inverted_index()
         return self._resolved_inverted_index
 
+    def create_dictionary_lexicon(self):
+        #add each word in lexicon list into the dictionary as key, and its index as value
+        for index in range(len(self._lexicon)):
+            if index==0:
+                continue
+            self._lexicon_dic[self._lexicon[index]]=index
+
+
     def crawl(self, depth=2, timeout=3):
         """Crawl the web!"""
         seen = set()
@@ -369,6 +385,8 @@ class crawler(object):
             try:
                 socket = urllib2.urlopen(url, timeout=timeout)
                 soup = BeautifulSoup(socket.read())
+                if self._curr_doc_id != 0:
+                    self._url_link.append((self._curr_doc_id, doc_id))
 
                 self._curr_depth = depth_ + 1
                 self._curr_url = url
@@ -388,10 +406,36 @@ class crawler(object):
             finally:
                 if socket:
                     socket.close()
+                self.create_dictionary_lexicon()
+
+def simulate_a_search(search_word, bot, result_page_rank):
+    #first locate the searched word's id
+    search_word_id=bot._lexicon_dic[search_word]
+    #next we get the list of urls containing this word
+    url_list=bot._inverted_index[search_word_id]
+    url_scores={}
+    #get the score for every urls
+    doc_urls = []
+    for url_id in url_list:
+        url_scores[url_id]=result_page_rank[url_id]
+        doc_urls.append(bot._document_index[url_id])
+    print url_scores
+    print doc_urls
+    print len(doc_urls)
+    #sort the pages based on their ranking
+    sorted_ranking=[]
+
+
+
+
+
 
 
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
-    bot.crawl(depth=0)
-    bot.get_inverted_index(do_print=True)
-    bot.get_resolved_inverted_index(do_print=True)
+    bot.crawl(depth=1)
+    result_page_rank=pageRank.page_rank(bot._url_link)
+    searched_word="google"
+    simulate_a_search(searched_word, bot, result_page_rank)
+
+
