@@ -25,7 +25,10 @@
 4. _document_index: a list of all the documents crawled, the index of each entry is the actual document id
 5. _lexicon: a list of all the words crawled, the index of each entry is the actual word id
 6. _lexicon_dic: a dictionary that has each lexicon as key and their word_id as value for quick searching
-7. _url_link: a list of pairs, the first element in the pair is from_doc_id, the second is to_url_id'''
+7. _url_link: a list of pairs, the first element in the pair is from_doc_id, the second is to_url_id
+8. _first_20_words: a dictionary that records the first 20 words on each website crawled, the key is url, value is
+                    a list of the first 20 words on that website
+9. _document_title: a dictionary that records the title of each website, key is url, value is a string(its title)'''
 
 
 import urllib2
@@ -77,6 +80,12 @@ class crawler(object):
         self._resolved_inverted_index={}
         # a list of pairs of from_url and to_utl used by pagerank system
         self._url_link=[]
+        # a dictionary of url as key and the first 20 words on that url as value
+        self._first_20_words={}
+        # a dictionary that stores the titles of each url crawled
+        self._document_title={}
+
+        self._curr_url_word_count=0
 
 
         # functions to call when entering and exiting specific tags
@@ -169,6 +178,12 @@ class crawler(object):
     def word_id(self, word):
         """Get the word id of some specific word.
             note: input argument word is a string"""
+        if self._curr_url_word_count<=20:
+            if self._curr_url_word_count==0:
+                self._first_20_words[self._curr_url]=[word]
+            else:
+                self._first_20_words[self._curr_url].append(word)
+            self._curr_url_word_count+=1
         if word in self._word_id_cache:
             self._resolved_inverted_index[word].add(self._curr_url)
             self._inverted_index[self._word_id_cache[word]].add(self._curr_doc_id)
@@ -227,6 +242,7 @@ class crawler(object):
         print "document title=" + repr(title_text)
 
         # TODO update document title for document id self._curr_doc_id
+        self._document_title[self._curr_doc_id]=repr(title_text)
 
     def _visit_a(self, elem):
         """Called when visiting <a> tags."""
@@ -274,6 +290,7 @@ class crawler(object):
             if word in self._ignored_words:
                 continue
             self._curr_words.append((self.word_id(word), self._font_size))
+
 
     def _text_of(self, elem):
         """Get the text inside some element without any tags."""
@@ -386,6 +403,7 @@ class crawler(object):
                 socket = urllib2.urlopen(url, timeout=timeout)
                 soup = BeautifulSoup(socket.read())
                 #if self._curr_doc_id != 0:
+                self._curr_url_word_count=0
                 self._url_link.append((self._curr_doc_id, doc_id))
 
                 self._curr_depth = depth_ + 1
@@ -421,10 +439,15 @@ def simulate_a_search(search_word, bot, result_page_rank):
     #get the score for every urls
     for url_id in url_id_list:
         url_id_scores[url_id]=result_page_rank[url_id]
-
     #sort the dictionary of url ids based on their score
     sorted_by_score=sorted(url_id_scores.items(), key=lambda t:t[1])
     print sorted_by_score
+    url_sorted_by_score=[]
+    #get the actual website urls text
+    for pair in reversed(sorted_by_score):
+        url_sorted_by_score.append(bot._document_index[pair[0]])
+    print url_sorted_by_score
+
 
 
 
