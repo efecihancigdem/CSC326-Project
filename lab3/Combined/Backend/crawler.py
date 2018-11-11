@@ -37,6 +37,7 @@ from BeautifulSoup import *
 from collections import defaultdict
 import re
 import pageRank
+import redis
 
 
 def attr(elem, attr):
@@ -426,6 +427,58 @@ class crawler(object):
                     socket.close()
                 self.create_dictionary_lexicon()
 
+    def save_to_redis(self, result_page_rank):
+        #start a redis instance with default config
+        r=redis.Redis('localhost')
+        #first delete any old data
+        r.delete("_lexicon_dic")
+        r.delete("_inverted_index")
+        r.delete("page_rank")
+        r.delete("_document_index")
+
+        for key, value in self._lexicon_dic.items():
+            #when we need to access it, we use foo=r.hget('_lexicon_dic', search_word)
+            r.hset('_lexicon_dic', key, value)
+        for key, value in self._inverted_index.items():
+            r.hset('_inverted_index', key, value)
+        for key, value in result_page_rank.items():
+            r.hset('page_rank', key, value)
+        for i in range(len(self._document_index)):
+            word=self._document_index[i]
+            r.rpush('_document_index', word)
+
+        try:
+            r.save()
+        except redis.exceptions.ResponseError:
+            pass
+
+
+def simulate_a_search_redis(search_word):
+    '''This function takes in the word you want to search and return a list of urls ranking from
+        the best match to the worst match (element 0 is best match and element last is worst)'''
+    r = redis.Redis('localhost')
+    search_word_id= r.hget('_lexicon_dic', search_word)
+    if search_word_id==None:
+        print "Could not find word"
+        return
+    url_id_list=r.hget("_inverted_index", search_word_id)
+    #the url_id_list we get is a string of the form set(...), convert it into anactual set
+    url_id_list=eval(url_id_list)
+    url_id_scores={}
+    for url_id in url_id_list:
+        url_id_scores[url_id]=float(r.hget('page_rank', url_id))
+    # sort the dictionary of url ids based on their score
+    sorted_by_score=sorted(url_id_scores.items(), key=lambda t:t[1])
+    print sorted_by_score
+    url_sorted_by_score = []
+    for pair in reversed(sorted_by_score):
+        url_sorted_by_score.append(r.lindex('_document_index', int(pair[0])))
+    print url_sorted_by_score
+    return url_sorted_by_score
+
+
+
+
 def simulate_a_search(search_word, bot, result_page_rank):
     #first locate the searched word's id
     search_word_id=bot._lexicon_dic.get(search_word,0)
@@ -435,7 +488,7 @@ def simulate_a_search(search_word, bot, result_page_rank):
     #next we get the list of urls containing this word
     url_id_list=bot._inverted_index[search_word_id]
     url_id_scores={}
-    doc_urls = []
+
     #get the score for every urls
     for url_id in url_id_list:
         url_id_scores[url_id]=result_page_rank[url_id]
@@ -456,10 +509,16 @@ def simulate_a_search(search_word, bot, result_page_rank):
 
 
 if __name__ == "__main__":
+    searched_word = "google"
+    #simulate_a_search_redis(searched_word)
+    r=redis.Redis('localhost')
+
     bot = crawler(None, "urls.txt")
     bot.crawl(depth=1)
     result_page_rank=pageRank.page_rank(bot._url_link)
-    searched_word="google"
+
     simulate_a_search(searched_word, bot, result_page_rank)
+    bot.save_to_redis(result_page_rank)
+    simulate_a_search_redis(searched_word)
 
 
