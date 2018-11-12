@@ -466,7 +466,8 @@ def simulate_a_search_redis(search_word):
     url_id_list=eval(url_id_list)
     url_id_scores={}
     for url_id in url_id_list:
-        url_id_scores[url_id]=float(r.hget('page_rank', url_id))
+        numb=r.hget('page_rank', url_id)
+        url_id_scores[url_id]=float(numb)
     # sort the dictionary of url ids based on their score
     sorted_by_score=sorted(url_id_scores.items(), key=lambda t:t[1])
     print sorted_by_score
@@ -516,7 +517,6 @@ if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
     bot.crawl(depth=1)
     result_page_rank=pageRank.page_rank(bot._url_link)
-
     simulate_a_search(searched_word, bot, result_page_rank)
     bot.save_to_redis(result_page_rank)
     simulate_a_search_redis(searched_word)
