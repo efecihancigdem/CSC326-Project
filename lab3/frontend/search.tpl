@@ -13,10 +13,10 @@
           <nav>
           <ul>
             <li class = "current">
-              <a href="http://127.0.0.1:8080/"> Home</a>
+              <a href="http://127.0.0.1:8090/"> Home</a>
             </li>
             <li>
-              <a href="http://127.0.0.1:8080/about"> About</a>
+              <a href="http://127.0.0.1:8090/about"> About</a>
             </li>
           </ul>
           </nav>
@@ -49,7 +49,7 @@
         </div>
         <br>
         <br>
-        <p>Please click Home button or <a href="http://127.0.0.1:8080/">here</a> to go back to home page </p>
+        <p>Please click Home button or <a href="http://127.0.0.1:8090/">here</a> to go back to home page </p>
 
         %if logged_in== True:
           <a href="/signout" class="previous"> Sign out</a>

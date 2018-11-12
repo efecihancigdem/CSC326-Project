@@ -20,6 +20,7 @@ import httplib2
 from beaker.middleware import SessionMiddleware
 import urllib2
 import urllib
+import redis
 
 
 
@@ -35,7 +36,7 @@ session_opts = {
 CLIENT_ID= "41115492198-68e4f5r58f8toqi72hmgrf8rcjp24066.apps.googleusercontent.com"
 CLIENT_SECRET = "_gSgca14PJ3LKVQgyubz5Tms"
 SCOPE = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email'
-REDIRECT_URI = "http://localhost:8080/redirect"
+REDIRECT_URI = "http://localhost:8090/redirect"
 
 #Global variables for Keeping thrack of the session
 logged_in = False
@@ -53,6 +54,31 @@ links = ["http://www.google.ca", "http://www.apple.com", "http://www.toronto.ca"
 link_name = ["Google" , "Apple", "Toronto", "Tesla"]
 link_num=9
 
+def do_a_search_redis(search_word):
+    '''This function takes in the word you want to search and return a list of urls ranking from
+        the best match to the worst match (element 0 is best match and element last is worst)'''
+    r = redis.Redis('localhost')
+    search_word_id= r.hget('_lexicon_dic', search_word)
+    if search_word_id==None:
+        print "Could not find word"
+        return None
+    url_id_list=r.hget("_inverted_index", search_word_id)
+    #the url_id_list we get is a string of the form set(...), convert it into anactual set
+    url_id_list=eval(url_id_list)
+    url_id_scores={}
+    for url_id in url_id_list:
+        numb=r.hget('page_rank', url_id)
+        if numb==None:
+            continue
+        url_id_scores[url_id]=float(numb)
+    # sort the dictionary of url ids based on their score
+    sorted_by_score=sorted(url_id_scores.items(), key=lambda t:t[1])
+
+    url_sorted_by_score = []
+    for pair in reversed(sorted_by_score):
+        url_sorted_by_score.append(r.lindex('_document_index', int(pair[0])))
+
+    return url_sorted_by_score
 
 @hook('before_request')
 # Get the session object from the environ
@@ -152,7 +178,7 @@ def sign_out():
     request.session.pop('user_id', None)
     request.session.save()
     #Google Log out procedure
-    redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8080/")
+    redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8090/")
 	
 
 #Google redirects here after getting the request
@@ -324,5 +350,5 @@ def search_count_parse(results):
 ########################################################################
 
 app = SessionMiddleware(bottle.app(), session_opts)
-bottle.run(host='localhost',port=8080,app=app)
+bottle.run(host='localhost',port=8090,app=app)
 

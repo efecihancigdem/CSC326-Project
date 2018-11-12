@@ -13,10 +13,10 @@
 					<nav>
 					<ul>
 						<li class = "current">
-							<a href="http://127.0.0.1:8080/"> Home</a>
+							<a href="http://127.0.0.1:8090/"> Home</a>
 						</li>
 						<li>
-							<a href="http://127.0.0.1:8080/about"> About</a>
+							<a href="http://127.0.0.1:8090/about"> About</a>
 						</li>
 					</ul>
 					</nav>
