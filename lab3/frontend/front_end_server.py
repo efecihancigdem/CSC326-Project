@@ -21,6 +21,8 @@ from beaker.middleware import SessionMiddleware
 import urllib2
 import urllib
 
+
+
 #session varibales for session management
 session_opts = {
     'session.type': 'memory',
@@ -44,6 +46,13 @@ search_history = Counter()
 Client_DB = defaultdict(dict)
 client_list= []
 
+#new glabal variables for Lab3 
+current_query = ""
+description = ["search engine", "tecxh company", "best city", "best electric car company" ]
+links = ["http://www.google.ca", "http://www.apple.com", "http://www.toronto.ca", "http://www.tesla.com"]
+link_name = ["Google" , "Apple", "Toronto", "Tesla"]
+link_num=9
+
 
 @hook('before_request')
 # Get the session object from the environ
@@ -66,37 +75,51 @@ def display_search():
     # Parsing the search dividing the word and the frequency into 2 lists as words and count
     parsed_dict = word_count(query)
     words = search_word_parse(parsed_dict)
-    
-
-    #new part for lab3
-    page_num = request.query.page_no
-    print "page value = " , page_num
-    first_word = query.split()
-    first_word[0]
-    ###########################################################################################################
-    ######passing first_word[0] to search algo of the backend
-    ######Putting them into a global variable
-    ######if total pages > 5 starts paginate
-    ###### MAKE SURE HAVE GLOBAL FOR CURRENT PAGE AND CURRENT_QUERY TO CHECK THE STATE and not to do the research again
-    ###########################################################################################################
     count = search_count_parse(parsed_dict)
 
-    #if results_num >5:
-    
+    ##############################################################################new part for lab3
+    current_page = request.query.page_no
+    print "page value ="+str(current_page)
+    total_page= -(-link_num/5)
+    print total_page
     redirect_url_base = "/?keywords="+urllib.quote_plus(query)
-    print redirect_url
-        #if current page != page_num:
-            #redirect(/redirect_url_base+"&page_no="+str(current_page) )
-        #ELSE
-            #if current_page=1
-                #current_page++
-                #next_url = redirect_url_base+"&page_no="+str(current_page)
-                #current_url = redirect_url_base+"&page_no="+str(current_page-1)
-                #return template('search', name=words, freq=count, query=query ,logged_in = logged_in , user= user_email, current_url= ,  next_url= ,previous_url = "none" ) # sending lists to template to display
-
-            #RETRUN BELWO
-    return template('search', name=words, freq=count, query=query ,logged_in = logged_in , user= user_email ) # sending lists to template to display
-
+    print redirect_url_base
+    ##algo here
+    if query != current_query:
+        #new search
+        #DO SEARCH TO UPDATE follwoing varibales: links, link_name,link_num,description
+        global current_query
+        current_query = query
+        ordered_words = query.split()
+        first_word = ordered_words[0] #this word to be serached
+        print "new search is done"
+        #needs pagination
+    print "before isinstance"
+    if current_page != "": # checking if current_page exist
+        integer_version = int(current_page)
+        if integer_version==1: 
+            print "first page"
+            next_link=redirect_url_base+"&page_no=2"
+            prev_link="none"
+        elif integer_version == total_page:
+            print "last page"
+            next_link="none"
+            prev_page = int(current_page)-1
+            prev_link=redirect_url_base+"&page_no="+str(prev_page)
+        else:
+            print "mid pages"
+            next_page =int(current_page)+1
+            next_link=redirect_url_base+"&page_no="+str(next_page)
+            prev_page = int(current_page)-1
+            prev_link=redirect_url_base+"&page_no="+str(prev_page)
+        return template('search', name=words, freq=count, query=query ,logged_in = logged_in , user= user_email , description=description ,  
+        website_name= link_name ,link = links,link_num=4, total_page= total_page, current_page= current_page , base_link=redirect_url_base , next_link=next_link , prev_link=prev_link ) # sending lists to template to display
+        
+    else:
+        print "else isinstance"
+        #needs redirecting to add new page_no parameter to the url
+        redirect(str(redirect_url_base+"&page_no=1"))
+    
 
 @route('/about')
 def about():

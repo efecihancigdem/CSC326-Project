@@ -5,6 +5,7 @@ body{
 	padding: 0;
 	margin: 0;
 	background-color: #f4f4f4;
+	text-decoration: none;
 }
 
 /* Global*/
@@ -14,6 +15,8 @@ body{
 	overflow: hidden;
 
 }
+
+
 
 ul{
 	padding: 0;
@@ -101,7 +104,7 @@ header a:hover{
 }
 
 
-#showcase input[type ="text"]{
+input[type ="text"]{
 	padding: 4px;
 	height: 25px;
 	width: 250px;
@@ -110,7 +113,7 @@ header a:hover{
 	font-weight: bold;
 }
 
-#showcase input[type ="submit"]{
+input[type ="submit"]{
 	height:38px;
 	background: #e8491d;
 	border: 0;
@@ -135,7 +138,42 @@ footer {
 	text-align: center;
 }
 
+.results{
+	float: left;
+	text-decoration: none;
+	text-align: left;
+	
+}
+
+.results li{
+	float: left;
+	padding: 20px;
+	background-color: #F5CBA7;
+	margin: 25px 0 0 25px;
+	display: block;
+	width: 40%;
+	border-radius: 2px 2px 2px 2px;
+	border-color: #FFFFFF
+	box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.3);  
+	color:#35424a;
+	text-decoration: none;
+}
 
 
+.results li:hover{
+	background-color: #e8491d;
+	color: #ffffff;
+}
+.results a{
+	text-transform: uppercase;
+	font-size: 16px;
+	text-decoration: none;
+	font-weight: bold;
+}
 
-
+a:link{
+  text-decoration: none;
+}
+.clear {
+	clear: both;
+}
