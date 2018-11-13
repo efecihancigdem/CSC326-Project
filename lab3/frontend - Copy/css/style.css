@@ -207,7 +207,7 @@ a:link{
 .pagination a:hover:not(.active) {background-color: #ddd;}
 
 .errorhandling{
-	min-height: 1000px;
-	background:url('/img/error.JPG') no-repeat 0 0px;
+	min-height: 500px;
+	background:url('/img/error.jpeg') no-repeat 0 0px;
 
 }

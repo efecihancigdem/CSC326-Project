@@ -36,7 +36,7 @@ session_opts = {
 CLIENT_ID= "41115492198-68e4f5r58f8toqi72hmgrf8rcjp24066.apps.googleusercontent.com"
 CLIENT_SECRET = "_gSgca14PJ3LKVQgyubz5Tms"
 SCOPE = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email'
-REDIRECT_URI = "http://localhost:8080/redirect"
+REDIRECT_URI = "http://localhost:80/redirect"
 
 #Global variables for Keeping thrack of the session
 logged_in = False
@@ -192,7 +192,7 @@ def sign_out():
     request.session.pop('user_id', None)
     request.session.save()
     #Google Log out procedure
-    redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8090/")
+    redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:80/")
 	
 
 #Google redirects here after getting the request
@@ -368,5 +368,5 @@ def search_count_parse(results):
 ########################################################################
 
 app = SessionMiddleware(bottle.app(), session_opts)
-bottle.run(host='localhost',port=8090,app=app)
+bottle.run(host='localhost',port=80,app=app)
 
