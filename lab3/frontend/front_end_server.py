@@ -81,6 +81,7 @@ def do_a_search_redis(search_word):
     for pair in reversed(sorted_by_score):
         url_sorted_by_score.append(r.lindex('_document_index', int(pair[0])))
 
+    # the return variable is a list of searched urls sorted by their score
     return url_sorted_by_score
 
 @hook('before_request')

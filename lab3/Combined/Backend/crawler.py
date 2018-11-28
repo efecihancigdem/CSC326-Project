@@ -435,6 +435,8 @@ class crawler(object):
         r.delete("_inverted_index")
         r.delete("page_rank")
         r.delete("_document_index")
+        r.delete("_document_title")
+        r.delete("_first_20_words")
 
         for key, value in self._lexicon_dic.items():
             #when we need to access it, we use foo=r.hget('_lexicon_dic', search_word)
@@ -446,6 +448,11 @@ class crawler(object):
         for i in range(len(self._document_index)):
             word=self._document_index[i]
             r.rpush('_document_index', word)
+        for key, value in self._document_title.items():
+            r.hset('_document_title', key, value)
+        for key, value in self._first_20_words.items():
+            r.hset('_first_20_words', key, ' '.join(value))
+
 
         try:
             r.save()

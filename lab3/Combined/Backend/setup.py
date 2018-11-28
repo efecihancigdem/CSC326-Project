@@ -8,6 +8,8 @@
 #as well as
 #               $ pip install redis
 #to install python api for redis server
+#To restart redis server, use
+#sudo service redis-server restart
 
 import pageRank
 import crawler
