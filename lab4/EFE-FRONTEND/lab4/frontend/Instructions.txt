@@ -1,0 +1,3 @@
+Run front end server.py
+The website is created at localhost:8080
+You can see our logo and also search bar in there.
